@@ -1,11 +1,10 @@
 package com.energy.admin.repository;
 
-import com.energy.admin.model.EnergyMeter;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
+
+import com.energy.admin.model.EnergyMeter;
+import jakarta.persistence.*;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class EnergyMeterDetailsRepository {
@@ -13,9 +12,11 @@ public class EnergyMeterDetailsRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<EnergyMeter> findByMeterDetails(String searchQuery) {
-        // Kwetsbare query, gevoelig voor SQL-injectie
-        String query = "SELECT * FROM energy_meters WHERE id = '" + searchQuery + "'";
-        return entityManager.createNativeQuery(query, EnergyMeter.class).getResultList();
+    public List<EnergyMeter> findByMeterDetails(String id) {
+        String query = "SELECT * FROM energy_meters WHERE id = :id";
+
+        TypedQuery<EnergyMeter> q = entityManager.createQuery(query, EnergyMeter.class);
+        q.setParameter("id", id);
+        return q.getResultList();
     }
 }
